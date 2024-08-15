@@ -1,0 +1,51 @@
+type DownloadStatus {
+	video_id: String!
+	status: String
+	filename: String
+}
+
+type UserHistory @aws_cognito_user_pools
+@aws_api_key {
+	user_id: String!
+	video_id: String!
+	timestamp: Int
+}
+
+type UserHistoryConnection @aws_cognito_user_pools
+@aws_api_key {
+	items: [UserHistory]
+	nextToken: String
+}
+
+input EnqueueDownloadInput {
+	url: String!
+}
+
+input CreateDownloadStatusInput {
+	video_id: String!
+	status: String
+	filename: String
+}
+
+input UpdateDownloadStatusInput {
+	video_id: String!
+	status: String
+	filename: String
+}
+
+type Mutation {
+	enqueueDownload(input: EnqueueDownloadInput!): String @aws_cognito_user_pools
+	createDownloadStatus(input: CreateDownloadStatusInput!): DownloadStatus
+	updateDownloadStatus(input: UpdateDownloadStatusInput!): DownloadStatus
+}
+
+type Query {
+	getDownloadStatus(video_id: String!): DownloadStatus
+	listMyDownloadHistory: UserHistoryConnection @aws_cognito_user_pools
+}
+
+type Subscription {
+	onUpdateDownloadStatus(video_id: String): DownloadStatus
+		@aws_subscribe(mutations: ["updateDownloadStatus"])
+	
+}
