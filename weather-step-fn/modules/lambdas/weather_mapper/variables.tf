@@ -1,0 +1,2 @@
+variable "runtime" {}
+variable "roleArn" {}

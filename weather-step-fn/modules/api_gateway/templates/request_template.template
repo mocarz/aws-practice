@@ -1,0 +1,9 @@
+#define($body){
+  "location": "$input.params('location')"
+}
+
+#end
+{
+  "input": "$util.escapeJavaScript($body)",
+  "stateMachineArn": "$util.escapeJavaScript($stageVariables.arn)"
+}

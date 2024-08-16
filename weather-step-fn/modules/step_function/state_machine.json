@@ -1,0 +1,16 @@
+{
+    "Comment": "execute lambdas",
+    "StartAt": "${start_at}",
+    "States": {
+        "${weather_getter_lambda_name}": {
+            "Type": "Task",
+            "Resource": "${weather_getter_lambda_arn}",
+            "Next": "${weather_mapper_lambda_name}"
+        },
+        "${weather_mapper_lambda_name}": {
+            "Type": "Task",
+            "Resource": "${weather_mapper_lambda_arn}",
+            "End": true
+        }
+    }
+}

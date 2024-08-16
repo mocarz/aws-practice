@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "MyWeatherResponse",
+    "type": "object",
+    "required": [
+        "temperature",
+        "city",
+        "country"
+    ],
+    "properties": {
+        "temperature": {
+            "type": "number"
+        },
+        "city": {
+            "type": "string"
+        },
+        "country": {
+            "type": "string"
+        }
+    }
+}

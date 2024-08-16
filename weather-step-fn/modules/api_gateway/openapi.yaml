@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Weather api
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: get weather api
+      parameters:
+        - in: query
+          name: location
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful weather get operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherResponse'
+      x-amazon-apigateway-integration:
+        $ref: '#/components/x-amazon-apigateway-integrations/weather-integration'
+components:
+  x-amazon-apigateway-integrations:
+    weather-integration:
+      type: "aws"
+      uri: "arn:aws:apigateway:${region}:states:action/StartSyncExecution"
+      credentials: "${stepFunctionsArn}"
+      httpMethod: "POST"
+      passthroughBehavior: "WHEN_NO_TEMPLATES"
+      payloadFormatVersion: "1.0"
+      requestParameters:
+        integration.request.querystring.location: method.request.querystring.location
+      requestTemplates:
+        application/json: |
+          #define($body){
+            "location": "$input.params('location')"
+          }
+          
+          #end
+          {
+            "input": "$util.escapeJavaScript($body)",
+            "stateMachineArn": "$util.escapeJavaScript($stageVariables.arn)"
+          }
+      responses:
+        '200':
+          statusCode: '200'
+          responseTemplates:
+            application/json: |
+              #set($inputRoot = $input.path('$')) 
+              {
+                "output" : $inputRoot.output,
+                "status" : "$inputRoot.status"
+              }
+  schemas:
+    WeatherResponse:
+      type: object
+      properties:
+        temperature:
+          type: number
+          example: 10.1
+        city:
+          type: string
+          example: Gdańsk
+        country:
+          type: string
+          example: Poland
